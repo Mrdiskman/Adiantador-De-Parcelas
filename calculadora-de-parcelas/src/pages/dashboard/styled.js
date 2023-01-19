@@ -82,4 +82,9 @@ export const Main = styled.main`
   span{
     color: red;
   }
+
+  .title{
+    color: #2d302e;
+    font-size: 26px;
+  }
   `

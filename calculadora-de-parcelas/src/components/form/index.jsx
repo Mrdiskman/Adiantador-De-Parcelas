@@ -2,10 +2,12 @@ import api from "../../services/api";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Results from "../values";
+import {yupResolver} from "@hookform/resolvers/yup"
+import { formSchema } from "./validators";
 
 const Form = ()=>{
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    
+    const { register, handleSubmit, formState: { errors } } = useForm({resolver:yupResolver(formSchema)});
+
     const onSubmit = data => {
         const newData = {
             amount:Number(data.amount),
@@ -23,26 +25,20 @@ const Form = ()=>{
     })
 
     async function conection(data){
-        console.log(data)
         const result = await api.post("",data  
-        ).then(
-            (res)=> setValues(res.data)
+        ).then((res)=> setValues(res.data)
         ).catch((err)=> console.log(err))
     }
-
+    console.log("aqui", errors)
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <label>
-                    Informe o valor da venda *
-                    <br/>
-                    <input type="text" {...register("amount", {required: "this fild is required" })} className="field"/>
+                <h1 className="title">Simulação de Antecipação</h1>
+                <label>Informe o valor da venda *</label>
+                    <input type="number" {...register("amount")} className="field"/>
                     <span>{errors.amount?.message}</span>
-                </label>
 
-                <label >
-                    Em quantas parcelas *
-                    <br/>
+                <label>Em quantas parcelas *</label>
                     <select id="installments" {...register('installments')}>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -57,14 +53,10 @@ const Form = ()=>{
                         <option value="11">11</option>
                         <option value="12">12</option>
                     </select>
-                </label>
 
-                <label>
-                    Informe o percentual de MDR *
-                    <br/>
-                    <input type="text" {...register("mdr", {required: "this fild is required" })} className="field"/>
-                    <span>{errors.amount?.message}</span>
-                </label>
+                <label>Informe o percentual de MDR *</label>
+                    <input type="number" {...register("mdr", {required: "this fild is required" })} className="field"/>
+                    <span>{errors.mdr?.message}</span>
 
                 <button type="submit" className="enviar">Enviar</button>
             </form>
